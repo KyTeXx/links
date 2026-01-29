@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abdülkadir Akpınar</title>
+    <title>Abdülkadir Akpınar | Kişisel WebSite</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <style>
         :root {
@@ -16,6 +17,14 @@
             --bg: #0a0a0c; --text: #ffffff; --card: #16161a; --nav-bg: rgba(10, 10, 12, 0.9);
         }
 
+        /* --- LOGO VE IŞIK EFEKTİ --- */
+        @keyframes logoGlow {
+            0% { text-shadow: 0 0 5px rgba(var(--gold-rgb), 0.2); }
+            50% { text-shadow: 0 0 25px rgba(var(--gold-rgb), 0.6), 0 0 35px rgba(var(--gold-rgb), 0.4); }
+            100% { text-shadow: 0 0 5px rgba(var(--gold-rgb), 0.2); }
+        }
+        .logo, .footer-logo { animation: logoGlow 3s infinite ease-in-out; text-decoration: none; }
+
         /* --- PRELOADER --- */
         #preloader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -23,32 +32,11 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: opacity 0.8s ease, visibility 0.8s;
         }
-        .loader-logo {
-            font-size: 2.5rem; font-weight: 800; color: var(--text);
-            text-decoration: none; margin-bottom: 20px;
-            animation: logoGlow 2s infinite ease-in-out;
-        }
+        .loader-logo { font-size: 2.5rem; font-weight: 800; color: var(--text); animation: logoGlow 2s infinite ease-in-out; }
         .loader-logo span { color: var(--gold); }
-        
-        .loader-bar {
-            width: 200px; height: 3px; background: rgba(var(--gold-rgb), 0.1);
-            position: relative; overflow: hidden; border-radius: 5px;
-        }
-        .loader-bar::after {
-            content: ''; position: absolute; left: -100%; width: 100%; height: 100%;
-            background: var(--gold); animation: loading 1.5s infinite;
-        }
-
-        @keyframes loading {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-
-        @keyframes logoGlow {
-            0% { text-shadow: 0 0 5px rgba(var(--gold-rgb), 0.2); }
-            50% { text-shadow: 0 0 25px rgba(var(--gold-rgb), 0.6), 0 0 35px rgba(var(--gold-rgb), 0.4); }
-            100% { text-shadow: 0 0 5px rgba(var(--gold-rgb), 0.2); }
-        }
+        .loader-bar { width: 200px; height: 3px; background: rgba(var(--gold-rgb), 0.1); position: relative; overflow: hidden; border-radius: 5px; }
+        .loader-bar::after { content: ''; position: absolute; left: -100%; width: 100%; height: 100%; background: var(--gold); animation: loading 1.5s infinite; }
+        @keyframes loading { 0% { left: -100%; } 100% { left: 100%; } }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; scroll-behavior: smooth; }
         body { background-color: var(--bg); color: var(--text); transition: background 0.5s ease; overflow-x: hidden; }
@@ -59,19 +47,19 @@
             padding: 15px 5%; position: fixed; width: 100%; top: 0; z-index: 1000;
             background: var(--nav-bg); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(var(--gold-rgb), 0.2);
         }
-        .logo { font-size: 1.4rem; font-weight: 800; color: var(--text); cursor: pointer; text-decoration: none; }
+        .logo { font-size: 1.4rem; font-weight: 800; color: var(--text); }
         .logo span { color: var(--gold); }
-        
         .nav-links { display: flex; list-style: none; gap: 15px; align-items: center; }
         .nav-links a { text-decoration: none; color: var(--text); font-weight: 500; font-size: 0.85rem; transition: 0.3s; }
         .nav-links a:hover { color: var(--gold); }
 
-        .panel-btn {
-            background: var(--gold); color: #000 !important; padding: 6px 18px; border-radius: 50px;
+        /* --- PANEL VE CV BUTONLARI --- */
+        .panel-btn, .cv-btn-special {
+            background: var(--gold); color: #000 !important; padding: 8px 22px; border-radius: 50px;
             font-weight: 800 !important; text-transform: uppercase; letter-spacing: 1px;
             animation: pulsePanel 2s infinite; border: 2px solid var(--gold); transition: 0.3s !important;
+            text-decoration: none; display: inline-block; cursor: pointer;
         }
-
         @keyframes pulsePanel {
             0% { box-shadow: 0 0 0 0 rgba(var(--gold-rgb), 0.7); }
             70% { box-shadow: 0 0 0 15px rgba(var(--gold-rgb), 0); }
@@ -83,16 +71,12 @@
         .hero-left { flex: 1; min-width: 300px; }
         .hero-left h1 { font-size: 4rem; line-height: 1.1; margin-bottom: 20px; }
         .hero-left span { color: var(--gold); }
-        
         .profile-wrapper {
-            width: 350px; height: 350px; position: relative;
-            background: url('https://picsum.photos/400/400?random=42') center/cover;
+            width: 350px; height: 350px; background: url('https://picsum.photos/400/400?random=42') center/cover;
             border: 8px solid var(--gold); animation: morphing 10s infinite alternate;
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.5s ease;
-            cursor: pointer;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.5s ease; cursor: pointer;
         }
         .profile-wrapper:hover { transform: scale(1.08); box-shadow: 0 0 40px rgba(var(--gold-rgb), 0.6); }
-
         @keyframes morphing {
             0% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
             50% { border-radius: 50% 50% 30% 70% / 50% 70% 30% 50%; }
@@ -101,39 +85,30 @@
 
         /* --- SECTIONS --- */
         .container { padding: 80px 10%; }
-        .section-title { margin-bottom: 50px; font-size: 2.5rem; text-align: center; }
+        .section-title { margin-bottom: 50px; font-size: 2.5rem; text-align: center; display: flex; align-items: center; justify-content: center; gap: 15px; }
+        .section-title i { color: var(--gold); font-size: 2.2rem; }
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
-        
-        .info-card {
-            background: var(--card); padding: 30px; border-radius: 15px; border: 2px solid transparent;
-            transition: 0.4s; cursor: pointer; text-align: left;
-        }
+        .info-card { background: var(--card); padding: 30px; border-radius: 15px; border: 2px solid transparent; transition: 0.4s; cursor: pointer; }
         .info-card:hover { transform: scale(1.05); border-color: var(--gold); box-shadow: 0 0 25px rgba(var(--gold-rgb), 0.5); }
         .info-card h3 { margin-bottom: 10px; color: var(--gold); }
         .detail-btn { margin-top: 15px; display: inline-block; color: var(--gold); font-weight: bold; cursor: pointer; border-bottom: 1px solid var(--gold); }
 
-        /* --- CONTACT & FORM --- */
+        /* --- CONTACT --- */
         .contact-layout { display: flex; gap: 50px; flex-wrap: wrap; margin-top: 40px; }
         .contact-info { flex: 1; min-width: 250px; }
         .contact-form { flex: 1; min-width: 300px; background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid rgba(var(--gold-rgb), 0.1); }
         .form-group { margin-bottom: 15px; }
-        .form-group input, .form-group textarea {
-            width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #444; background: var(--bg); color: var(--text);
-        }
-        .btn-send {
-            width: 100%; padding: 12px; background: var(--gold); border: none; border-radius: 10px;
-            font-weight: bold; cursor: pointer; transition: 0.3s;
-        }
-        .btn-send:hover { opacity: 0.8; }
+        .form-group input, .form-group textarea { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #444; background: var(--bg); color: var(--text); }
+        .btn-send { width: 100%; padding: 12px; background: var(--gold); border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; }
 
-        /* --- SOCIAL MEDIA ICONS (YENİ RENKLER) --- */
+        /* --- SOSYAL MEDYA (GÜNCELLENMİŞ) --- */
         .social-grid { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 30px; }
+        .social-grid a { text-decoration: none; }
         .social-grid i { 
-            font-size: 1.3rem; width: 45px; height: 45px; border: 2px solid var(--gold); 
+            font-size: 1.3rem; width: 45px; height: 45px; border: 1px solid var(--gold); 
             border-radius: 50%; display: flex; align-items: center; justify-content: center; 
             transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); color: var(--text); cursor: pointer;
         }
-
         .social-grid i.fa-instagram:hover { color: #E1306C; border-color: #E1306C; transform: scale(1.2) rotate(360deg); }
         .social-grid i.fa-linkedin-in:hover { color: #0077B5; border-color: #0077B5; transform: scale(1.2) rotate(360deg); }
         .social-grid i.fa-twitter:hover { color: #1DA1F2; border-color: #1DA1F2; transform: scale(1.2) rotate(360deg); }
@@ -145,16 +120,16 @@
 
         /* --- FOOTER --- */
         footer { padding: 60px 10% 20px; background: var(--card); border-top: 1px solid rgba(var(--gold-rgb), 0.2); text-align: center; }
+        .footer-logo { font-size: 2rem; font-weight: 800; margin-bottom: 25px; color: var(--text); display: block; }
+        .footer-logo span { color: var(--gold); }
         .footer-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(var(--gold-rgb), 0.1); }
-        .visitor-ip { font-size: 0.9rem; font-weight: 800; color: var(--text); }
+        .visitor-ip { font-size: 0.9rem; font-weight: 800; }
         .visitor-ip span { color: var(--gold); }
 
-        /* --- MODAL & MISC --- */
+        /* --- MODAL --- */
         .modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; backdrop-filter: blur(5px); }
         .modal-content { background: var(--card); padding: 40px; border-radius: 20px; max-width: 500px; width: 90%; position: relative; border: 2px solid var(--gold); }
         .close-modal { position: absolute; top: 15px; right: 20px; font-size: 2rem; cursor: pointer; color: var(--gold); }
-        .btn-move { padding: 12px 30px; border: 2px solid var(--gold); background: transparent; color: var(--text); font-weight: bold; border-radius: 50px; cursor: pointer; transition: 0.4s; text-decoration: none; display: inline-block; }
-        .btn-move:hover { background: var(--gold); color: #000; }
         .up-arrow { position: fixed; bottom: 30px; right: 30px; background: var(--gold); width: 50px; height: 50px; border-radius: 50%; display: none; align-items: center; justify-content: center; cursor: pointer; color: #000; z-index: 100; }
     </style>
 </head>
@@ -186,7 +161,7 @@
         <div class="hero-left">
             <h1>Merhaba, Ben <br><span>Abdülkadir</span></h1>
             <p style="font-size: 1.2rem; opacity: 0.8; margin-bottom: 30px;">Full Stack Geliştirici & Tasarımcı</p>
-            <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" download class="btn-move">CV İndir</a>
+            <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" download="Abdulkadir_Akpinar_CV.pdf" class="cv-btn-special" onclick="celebrate()">CV İndir</a>
         </div>
         <div class="hero-right">
             <div class="profile-wrapper"></div>
@@ -194,69 +169,69 @@
     </section>
 
     <section id="about" class="container">
-        <h2 class="section-title">Hakkımda</h2>
+        <h2 class="section-title"><i class="fas fa-user-tie"></i>Hakkımda</h2>
         <div class="grid-container">
             <div class="info-card">
                 <h3>Dijital Vizyon</h3>
                 <p>En güncel teknolojileri kullanarak şık ve fonksiyonel sistemler inşa ediyorum.</p>
-                <span class="detail-btn" onclick="openModal('Hakkımda', 'Yazılım dünyasındaki gelişmeleri takip ederek modern çözümler sunuyorum.')">detaylı incele</span>
+                <span class="detail-btn" onclick="openModal('Hakkımda', 'Modern yazılım mimarileriyle ölçeklenebilir çözümler geliştiriyorum.')">detaylı incele</span>
             </div>
         </div>
     </section>
 
     <section id="referans" class="container" style="background: rgba(var(--gold-rgb), 0.02);">
-        <h2 class="section-title">Referanslar</h2>
+        <h2 class="section-title"><i class="fas fa-handshake"></i>Referanslar</h2>
         <div class="grid-container">
             <div class="info-card">
-                <h3>Tech Solution</h3>
-                <p>Full Stack Mühendisi</p>
-                <span class="detail-btn" onclick="openModal('Referans', 'Kurumsal veri yönetimi projelerinde aktif rol aldım.')">detaylı incele</span>
+                <h3>Kurumsal Çözümler</h3>
+                <p>Yazılım Danışmanlığı</p>
+                <span class="detail-btn" onclick="openModal('Referans', 'Birçok farklı sektörde başarılı entegrasyon süreçleri yürüttüm.')">detaylı incele</span>
             </div>
         </div>
     </section>
 
     <section id="projeler" class="container">
-        <h2 class="section-title">Projeler</h2>
+        <h2 class="section-title"><i class="fas fa-laptop-code"></i>Projeler</h2>
         <div class="grid-container">
             <div class="info-card">
                 <h3>Crypto Tracker</h3>
-                <p>Anlık kripto para takibi uygulaması.</p>
-                <span class="detail-btn" onclick="openModal('Proje', 'WebSocket ile saniyelik veri akışı sağlanan özel bir platform.')">detaylı incele</span>
+                <p>Anlık veri takibi uygulaması.</p>
+                <span class="detail-btn" onclick="openModal('Proje', 'WebSocket ve gerçek zamanlı API verileriyle geliştirilmiş dashboard.')">detaylı incele</span>
             </div>
         </div>
     </section>
 
     <section id="sertifikalar" class="container" style="background: rgba(var(--gold-rgb), 0.02);">
-        <h2 class="section-title">Sertifikalar</h2>
+        <h2 class="section-title"><i class="fas fa-certificate"></i>Sertifikalar</h2>
         <div class="grid-container">
             <div class="info-card">
                 <h3>Azure Developer</h3>
-                <p>Microsoft Onaylı Bulut Geliştirici</p>
-                <span class="detail-btn" onclick="openModal('Sertifika', 'Bulut mimarileri üzerine profesyonel yetkinlik.')">detaylı incele</span>
+                <p>Microsoft Sertifikalı</p>
+                <span class="detail-btn" onclick="openModal('Sertifika', 'Bulut tabanlı geliştirme süreçleri uzmanlığı.')">detaylı incele</span>
             </div>
         </div>
     </section>
 
     <section id="blog" class="container">
-        <h2 class="section-title">Blog</h2>
+        <h2 class="section-title"><i class="fas fa-blog"></i>Blog</h2>
         <div class="grid-container">
             <div class="info-card">
                 <h3>Temiz Kod</h3>
-                <p>Sürdürülebilir yazılım prensipleri.</p>
-                <span class="detail-btn" onclick="openModal('Blog', 'SOLID ve KISS prensiplerinin derinlemesine incelemesi.')">detaylı incele</span>
+                <p>SOLID Prensipleri.</p>
+                <span class="detail-btn" onclick="openModal('Blog', 'Yazılımda sürdürülebilirlik ve kaliteli kod yazım standartları.')">detaylı incele</span>
             </div>
         </div>
     </section>
 
     <section id="contact" class="container">
-        <h2 class="section-title">İletişim</h2>
+        <h2 class="section-title"><i class="fas fa-envelope-open-text"></i>İletişim</h2>
         <div class="contact-layout">
             <div class="contact-info">
-                <p style="margin-bottom: 15px;">Fikirlerinizi projelere dönüştürmek için bana yazın.</p>
+                <p style="margin-bottom: 15px;">Yeni projeler için bana her zaman ulaşabilirsiniz.</p>
                 <p style="font-weight: 800; color: var(--gold); font-size: 1.1rem;">info@abdulkadirakpinar.com.tr</p>
             </div>
             <div class="contact-form">
-                <form onsubmit="event.preventDefault(); alert('İletiniz alındı!');">
+                <form onsubmit="event.preventDefault(); alert('İletiniz başarıyla gönderildi!');">
                     <div class="form-group"><input type="text" placeholder="Adınız" required></div>
                     <div class="form-group"><input type="email" placeholder="E-Posta" required></div>
                     <div class="form-group"><textarea rows="4" placeholder="Mesajınız" required></textarea></div>
@@ -267,36 +242,39 @@
     </section>
 
     <footer>
-        <a href="#home" class="logo" style="font-size: 2rem; display: block; margin-bottom: 25px;"><span>Abdülkadir</span> Akpınar</a>
+        <a href="#home" class="footer-logo"><span>Abdülkadir</span> Akpınar</a>
         
         <div class="social-grid">
-            <i href="https://instagram.com/akadirakpinarr" class="fab fa-instagram" title="Instagram"></i>
-            <i href="https://linkedin.com/in/akadirakpinarr" class="fab fa-linkedin-in" title="LinkedIn"></i>
-            <i href="https://x.com/akadirakpinarr" class="fab fa-twitter" title="Twitter"></i>
-     <!--       <i href="" class="fab fa-facebook-f" title="Facebook"></i>  -->
-            <i href="https://open.spotify.com/user/3ps0gb42l4ebj1s1qaofqq3iq?si=HgZxp_dzSoiHFoH3pYRIaw" class="fab fa-spotify" title="Spotify"></i>
-            <i href="https://youtube.com/@akadirakpinarr" class="fab fa-youtube" title="YouTube"></i>
-     <!--       <i href="" class="fab fa-twitch" title="Twitch"></i>
-            <i href="" class="fab fa-kickstarter-k" title="Kick"></i>   -->
+            <a href="https://www.instagram.com/akadirakpinarr" target="_blank"><i class="fab fa-instagram" title="Instagram"></i></a>
+            <a href="https://www.linkedin.com/in/akadirakpinarr" target="_blank"><i class="fab fa-linkedin-in" title="LinkedIn"></i></a>
+            <a href="https://x.com/akadirakpinarr" target="_blank"><i class="fab fa-twitter" title="Twitter"></i></a>
+            <a href="#" target="_blank"><i class="fab fa-facebook-f" title="Facebook"></i></a>
+            <a href="https://open.spotify.com" target="_blank"><i class="fab fa-spotify" title="Spotify"></i></a>
+            <a href="https://youtube.com/@akadirakpinarr" target="_blank"><i class="fab fa-youtube" title="YouTube"></i></a>
+            <a href="#" target="_blank"><i class="fab fa-twitch" title="Twitch"></i></a>
+            <a href="#" target="_blank"><i class="fab fa-kickstarter-k" title="Kick"></i></a>
         </div>
 
         <div class="footer-bottom">
-            <div class="visitor-ip">IP: <span id="user-ip">Yükleniyor...</span></div>
-            <p>© <span id="year"></span> Tüm Hakları Saklıdır.</p>
+            <div class="visitor-ip">IP ADRESİNİZ: <span id="user-ip">Yükleniyor...</span></div>
+            <p style="opacity: 0.7; font-size: 0.85rem;">© <span id="year"></span> Tüm Hakları Saklıdır.</p>
         </div>
     </footer>
 
     <div id="infoModal" class="modal" onclick="if(event.target == this) closeModal()">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <span class="close-modal" onclick="closeModal()">×</span>
             <h2 id="modal-title" style="color: var(--gold); margin-bottom: 15px;"></h2>
             <p id="modal-text"></p>
         </div>
     </div>
-
     <div class="up-arrow" id="up-btn" onclick="window.scrollTo(0,0)"><i class="fas fa-arrow-up"></i></div>
 
     <script>
+        function celebrate() {
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#FFD700', '#ffffff', '#ffea00'] });
+        }
+
         window.addEventListener('load', () => {
             const preloader = document.getElementById('preloader');
             preloader.style.opacity = '0';
@@ -324,4 +302,4 @@
         window.onscroll = () => { document.getElementById('up-btn').style.display = window.scrollY > 500 ? 'flex' : 'none'; };
     </script>
 </body>
-  </html>
+</html>
