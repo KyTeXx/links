@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webmail | Abdülkadir Akpınar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg: #0a0a0c; --sidebar-bg: #111114; --card: #16161a;
+            --text: #ffffff; --text-dim: #a0a0a0; --gold: #FFD700;
+            --gold-rgb: 255, 215, 0; --border: rgba(255, 215, 0, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
+        body { background-color: var(--bg); color: var(--text); height: 100vh; display: flex; overflow: hidden; }
+
+        /* --- PRELOADER --- */
+        #preloader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--bg); z-index: 99999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
+        .loader-content { text-align: center; }
+        .loader-logo { font-size: 2.5rem; font-weight: 800; color: var(--text); margin-bottom: 5px; animation: logoGlow 2s infinite ease-in-out; }
+        .loader-logo span { color: var(--gold); }
+        .loader-sub { color: var(--gold); font-weight: 300; letter-spacing: 8px; text-transform: uppercase; font-size: 0.9rem; margin-bottom: 25px; opacity: 0.8; }
+        .loader-bar { width: 180px; height: 2px; background: rgba(var(--gold-rgb), 0.1); position: relative; overflow: hidden; border-radius: 5px; margin: 0 auto; }
+        .loader-bar::after { content: ''; position: absolute; left: -100%; width: 100%; height: 100%; background: var(--gold); animation: loading 1.5s infinite; }
+
+        @keyframes loading { 0% { left: -100%; } 100% { left: 100%; } }
+        @keyframes logoGlow {
+            0%, 100% { text-shadow: 0 0 10px rgba(var(--gold-rgb), 0.2); }
+            50% { text-shadow: 0 0 30px rgba(var(--gold-rgb), 0.6); }
+        }
+
+        /* --- GİRİŞ EKRANI (LOGIN) --- */
+        #loginOverlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg); z-index: 9998; display: flex; align-items: center; justify-content: center;
+            transition: 0.5s ease;
+        }
+        .login-card {
+            background: var(--card); padding: 40px; border-radius: 25px; width: 400px;
+            border: 1px solid var(--border); box-shadow: 0 15px 35px rgba(0,0,0,0.5); text-align: center;
+        }
+        .login-card h2 { margin-bottom: 30px; font-weight: 800; }
+        .login-input-group { position: relative; margin-bottom: 20px; }
+        .login-input-group i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--gold); opacity: 0.7; }
+        .login-input-group input {
+            width: 100%; background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+            padding: 15px 15px 15px 45px; border-radius: 12px; color: #fff; outline: none; transition: 0.3s;
+        }
+        .login-input-group input:focus { border-color: var(--gold); background: rgba(var(--gold-rgb), 0.05); }
+        
+        .forgot-pass-btn { 
+            display: block; text-align: right; color: var(--gold); font-size: 0.85rem; 
+            margin-bottom: 25px; cursor: pointer; opacity: 0.8; transition: 0.3s;
+        }
+        .forgot-pass-btn:hover { opacity: 1; text-decoration: underline; }
+        
+        .enter-btn {
+            width: 100%; background: var(--gold); color: #000; border: none; padding: 15px;
+            border-radius: 12px; font-weight: 800; cursor: pointer; transition: 0.3s;
+        }
+        .enter-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(var(--gold-rgb), 0.3); }
+
+        /* --- SIDEBAR --- */
+        .sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px; }
+        .mail-logo-container { margin-bottom: 35px; padding-left: 5px; }
+        .mail-logo { font-size: 1.2rem; font-weight: 800; text-decoration: none; color: var(--text); display: block; }
+        .mail-logo span { color: var(--gold); }
+        .mail-logo-sub { font-size: 0.65rem; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; font-weight: 500; margin-top: -3px; display: block; }
+
+        .compose-btn {
+            background: var(--gold); color: #000; border: none; padding: 12px; border-radius: 12px;
+            font-weight: 800; cursor: pointer; margin-bottom: 30px; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s;
+        }
+        .compose-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(var(--gold-rgb), 0.4); }
+
+        .nav-menu { list-style: none; }
+        .nav-item { padding: 12px 15px; border-radius: 10px; cursor: pointer; color: var(--text-dim); transition: 0.3s; display: flex; align-items: center; gap: 12px; margin-bottom: 5px; }
+        .nav-item.active, .nav-item:hover { background: rgba(var(--gold-rgb), 0.1); color: var(--gold); }
+
+        /* --- MAIL LIST --- */
+        .mail-list { width: 380px; background: var(--bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+        .list-header { padding: 20px; border-bottom: 1px solid var(--border); }
+        .search-box { background: var(--card); border: 1px solid var(--border); padding: 8px 15px; border-radius: 8px; display: flex; align-items: center; gap: 10px; }
+        .search-box input { background: none; border: none; color: var(--text); outline: none; width: 100%; }
+
+        .scroll-area { overflow-y: auto; flex: 1; }
+        .mail-item { padding: 20px; border-bottom: 1px solid var(--border); cursor: pointer; transition: 0.2s; position: relative; }
+        .mail-item:hover { background: rgba(var(--gold-rgb), 0.05); }
+        .mail-item.unread { border-left: 4px solid var(--gold); background: rgba(var(--gold-rgb), 0.02); }
+        .mail-item.active { background: rgba(var(--gold-rgb), 0.1); }
+
+        .mail-item .sender { font-weight: 800; color: var(--gold); margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
+        .mail-item .time { font-size: 0.75rem; color: var(--text-dim); }
+        .mail-item .subject { font-size: 0.9rem; font-weight: 600; margin-bottom: 3px; }
+        .mail-item .preview { font-size: 0.8rem; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* --- CONTENT VIEW --- */
+        .content-view { flex: 1; display: flex; flex-direction: column; background: var(--bg); }
+        .content-header { padding: 15px 30px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; }
+        .action-group { display: flex; gap: 20px; color: var(--text-dim); align-items: center; }
+        .action-group i { cursor: pointer; transition: 0.3s; padding: 8px; border-radius: 50%; }
+        .action-group i:hover { color: var(--gold); background: rgba(var(--gold-rgb), 0.1); }
+
+        .email-body { padding: 40px; overflow-y: auto; flex: 1; display: none; }
+        .email-body.active { display: block; animation: fadeIn 0.4s ease; }
+        .email-title { font-size: 2rem; margin-bottom: 20px; font-weight: 800; }
+        .sender-info { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; padding: 15px; background: var(--card); border-radius: 12px; }
+        .avatar { width: 45px; height: 45px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 800; font-size: 1.2rem; }
+        .email-text { line-height: 1.8; color: #d1d1d1; font-size: 1.05rem; white-space: pre-line; }
+
+        /* --- MODAL --- */
+        .modal-background {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 999;
+        }
+        .modal-overlay { 
+            display: none; position: fixed; top: 50%; left: 50%; 
+            transform: translate(-50%, -50%); width: 600px; 
+            background: var(--card); border: 2px solid var(--gold); 
+            border-radius: 20px; z-index: 1000; 
+            box-shadow: 0 0 40px rgba(0,0,0,0.8);
+            animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes modalPop {
+            from { opacity: 0; transform: translate(-50%, -45%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+        .modal-header { background: var(--gold); color: #000; padding: 15px 25px; border-radius: 18px 18px 0 0; display: flex; justify-content: space-between; align-items: center; font-weight: 800; }
+        .modal-body { padding: 30px; }
+        .modal-body input, .modal-body textarea { width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--border); color: var(--text); padding: 15px 0; outline: none; margin-bottom: 15px; font-size: 1rem; }
+        .modal-body textarea { height: 200px; resize: none; }
+        .send-mail-btn { background: var(--gold); border: none; padding: 12px 35px; border-radius: 10px; font-weight: 800; cursor: pointer; float: right; transition: 0.3s; }
+        .send-mail-btn:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(var(--gold-rgb), 0.4); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <div id="preloader">
+        <div class="loader-content">
+            <div class="loader-logo"><span>Abdülkadir</span> Akpınar</div>
+            <div class="loader-sub">WebMail</div>
+            <div class="loader-bar"></div>
+        </div>
+    </div>
+
+    <div id="loginOverlay">
+        <div class="login-card">
+            <div class="mail-logo-container">
+                <div class="mail-logo" style="font-size: 1.8rem;"><span>A.</span> Akpınar</div>
+                <span class="loader-sub" style="font-size: 0.7rem; letter-spacing: 4px;">Giriş Yap</span>
+            </div>
+            <div class="login-input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="emailInput" placeholder="E-posta Adresiniz">
+            </div>
+            <div class="login-input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="passwordInput" placeholder="Şifreniz">
+            </div>
+            <span class="forgot-pass-btn" onclick="forgotPassword()">Şifremi Unuttum?</span>
+            <button class="enter-btn" onclick="loginAction()">Bağlan</button>
+        </div>
+    </div>
+
+    <div id="modalBg" class="modal-background" onclick="toggleCompose(false)"></div>
+
+    <div class="sidebar">
+        <div class="mail-logo-container">
+            <a href="#" class="mail-logo"><span>A.</span> Akpınar</a>
+            <span class="mail-logo-sub">WebMail</span>
+        </div>
+        
+        <button class="compose-btn" onclick="toggleCompose(true)"><i class="fas fa-edit"></i> Yeni E-posta</button>
+        
+        <ul class="nav-menu">
+            <li class="nav-item active" onclick="switchFolder('inbox', this)"><i class="fas fa-inbox"></i> Gelen Kutusu</li>
+            <li class="nav-item" onclick="switchFolder('sent', this)"><i class="fas fa-paper-plane"></i> Gönderilenler</li>
+            <li class="nav-item" onclick="switchFolder('star', this)"><i class="fas fa-star"></i> Yıldızlı</li>
+            <li class="nav-item" onclick="switchFolder('trash', this)"><i class="fas fa-trash"></i> Çöp Kutusu</li>
+        </ul>
+    </div>
+
+    <div class="mail-list">
+        <div class="list-header">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" onkeyup="handleSearch()" placeholder="Ara...">
+            </div>
+        </div>
+        <div class="scroll-area" id="mailListItems"></div>
+    </div>
+
+    <div class="content-view">
+        <div class="content-header">
+            <div class="action-group">
+                <i class="fas fa-archive" title="Arşivle" onclick="alert('Arşivlendi')"></i>
+                <i class="fas fa-exclamation-circle" title="Spam" onclick="alert('Spam işaretlendi')"></i>
+                <i class="fas fa-trash" onclick="deleteCurrentMail()" title="Sil"></i>
+            </div>
+            <div class="action-group">
+                <i class="fas fa-print" onclick="window.print()"></i>
+                <i class="fas fa-expand" onclick="alert('Tam ekran')"></i>
+            </div>
+        </div>
+        <div id="emailContent" class="email-body"></div>
+    </div>
+
+    <div class="modal-overlay" id="composeModal">
+        <div class="modal-header"><span>Yeni Mesaj</span><i class="fas fa-times" onclick="toggleCompose(false)" style="cursor:pointer"></i></div>
+        <div class="modal-body">
+            <input type="email" id="compTo" placeholder="Alıcı (örneğin: ad@mail.com)">
+            <input type="text" id="compSub" placeholder="Konu">
+            <textarea id="compBody" placeholder="Mesajınız buraya yazın..."></textarea>
+            <button class="send-mail-btn" onclick="sendSimulatedMail()">Gönder</button>
+        </div>
+    </div>
+
+    <script>
+        let mails = [
+            { id: 1, folder: 'inbox', sender: "Apple Business", avatar: "A", subject: "Yeni Giriş Tespit Edildi", time: "14:20", unread: true, content: "Sayın Akpınar,\n\nHesabınıza yeni bir cihazdan giriş yapıldı. Cihaz: MacBook Pro 16'.\n\nEğer bu işlemi siz yapmadıysanız lütfen hesabınızı hemen güvenceye alın." },
+            { id: 2, folder: 'inbox', sender: "GitHub Support", avatar: "G", subject: "Sponsorluk Onayı", time: "10:15", unread: false, content: "Merhaba Abdülkadir,\n\nAçık kaynak projelerine verdiğin destekler için teşekkürler. Sponsorluk başvurunuz onaylanmıştır." },
+            { id: 3, folder: 'inbox', sender: "Kreatif Ajans", avatar: "K", subject: "Yeni Proje Teklifi", time: "Dün", unread: true, content: "Selam Abdülkadir,\n\nHarika bir e-ticaret projemiz var ve Full-Stack tarafta seninle çalışmak istiyoruz. Detayları ekte bulabilirsin." }
+        ];
+
+        let currentFolder = 'inbox';
+        let currentMailId = null;
+
+        // PRELOADER KAPATMA
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            setTimeout(() => {
+                preloader.style.opacity = '0';
+                setTimeout(() => { preloader.style.visibility = 'hidden'; }, 800);
+            }, 1500);
+            renderMailList();
+        });
+
+        // GİRİŞ FONKSİYONU
+        function loginAction() {
+            const email = document.getElementById('emailInput').value;
+            const pass = document.getElementById('passwordInput').value;
+
+            if(email.includes('@') && pass.length > 2) {
+                const loginScreen = document.getElementById('loginOverlay');
+                loginScreen.style.opacity = '0';
+                setTimeout(() => loginScreen.style.display = 'none', 500);
+            } else {
+                alert("Lütfen geçerli bir e-posta ve şifre giriniz.");
+            }
+        }
+
+        // ŞİFREMİ UNUTTUM
+        function forgotPassword() {
+            const email = document.getElementById('emailInput').value;
+            if(email) {
+                alert("Sıfırlama bağlantısı " + email + " adresine gönderildi.");
+            } else {
+                alert("Lütfen önce e-posta adresinizi giriniz.");
+            }
+        }
+
+        function switchFolder(folder, element) {
+            currentFolder = folder;
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            element.classList.add('active');
+            currentMailId = null;
+            document.getElementById('emailContent').classList.remove('active');
+            renderMailList();
+        }
+
+        function renderMailList(filterMails = null) {
+            const list = document.getElementById('mailListItems');
+            const targetMails = filterMails || mails.filter(m => m.folder === currentFolder);
+            
+            if (targetMails.length === 0) {
+                list.innerHTML = `<div style="padding:20px; text-align:center; opacity:0.5;">Bu klasör boş.</div>`;
+                return;
+            }
+
+            list.innerHTML = targetMails.map(mail => `
+                <div class="mail-item ${mail.unread ? 'unread' : ''} ${currentMailId === mail.id ? 'active' : ''}" onclick="selectMail(${mail.id})">
+                    <div class="sender">${mail.sender} <span class="time">${mail.time}</span></div>
+                    <div class="subject">${mail.subject}</div>
+                    <div class="preview">${mail.content.substring(0, 40)}...</div>
+                </div>
+            `).join('');
+        }
+
+        function selectMail(id) {
+            currentMailId = id;
+            const mail = mails.find(m => m.id === id);
+            mail.unread = false;
+            
+            const contentDiv = document.getElementById('emailContent');
+            contentDiv.classList.add('active');
+            contentDiv.innerHTML = `
+                <h1 class="email-title">${mail.subject}</h1>
+                <div class="sender-info">
+                    <div class="avatar">${mail.avatar}</div>
+                    <div>
+                        <div style="font-weight:800">${mail.sender}</div>
+                        <div style="color:var(--text-dim); font-size:0.8rem">Kime: info@abdulkadirakpinar.com</div>
+                    </div>
+                </div>
+                <div class="email-text">${mail.content}</div>
+            `;
+            renderMailList();
+        }
+
+        function handleSearch() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = mails.filter(m => 
+                m.folder === currentFolder && 
+                (m.sender.toLowerCase().includes(term) || m.subject.toLowerCase().includes(term))
+            );
+            renderMailList(filtered);
+        }
+
+        function toggleCompose(show) { 
+            const modal = document.getElementById('composeModal');
+            const bg = document.getElementById('modalBg');
+            modal.style.display = show ? 'block' : 'none'; 
+            bg.style.display = show ? 'block' : 'none';
+        }
+
+        // GÜNCELLENEN GÖNDERME FONKSİYONU (DOĞRULAMA EKLENDİ)
+        function sendSimulatedMail() {
+            const to = document.getElementById('compTo').value;
+            const sub = document.getElementById('compSub').value;
+            const body = document.getElementById('compBody').value;
+
+            // E-posta formatı kontrolü için Regex (Düzenli İfade)
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if(!to || !sub) return alert("Lütfen alıcı ve konu alanlarını doldurun.");
+
+            if(!emailRegex.test(to)) {
+                alert("Lütfen geçerli bir e-posta adresi giriniz! (Örn: isim@mail.com)");
+                return;
+            }
+
+            mails.push({ id: Date.now(), folder: 'sent', sender: to, avatar: to.charAt(0).toUpperCase(), subject: sub, time: "Şimdi", unread: false, content: body });
+            alert("E-posta başarıyla gönderildi!");
+            toggleCompose(false);
+            if(currentFolder === 'sent') renderMailList();
+        }
+
+        function deleteCurrentMail() {
+            if(!currentMailId) return;
+            const mail = mails.find(m => m.id === currentMailId);
+            if (mail.folder === 'trash') {
+                mails = mails.filter(m => m.id !== currentMailId);
+            } else {
+                mail.folder = 'trash';
+            }
+            document.getElementById('emailContent').classList.remove('active');
+            currentMailId = null;
+            renderMailList();
+        }
+    </script>
+</body>
+</html>
+
