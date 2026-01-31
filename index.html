@@ -16,6 +16,8 @@
             --bg-dark: #030303;
             --glass: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.1);
+            --twitch: #9146FF; /* Twitch Marka Rengi */
+            --kick: #53fc18; /* Kick Neon Yeşil */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Space Grotesk', sans-serif; }
@@ -86,13 +88,14 @@
         @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
 
         /* Stagger Gecikmeleri */
-        .link-box:nth-child(1) { animation-delay: 0.2s; }
-        .link-box:nth-child(2) { animation-delay: 0.3s; }
-        .link-box:nth-child(3) { animation-delay: 0.4s; }
-        .link-box:nth-child(4) { animation-delay: 0.5s; }
-        .link-box:nth-child(5) { animation-delay: 0.6s; }
-        .link-box:nth-child(6) { animation-delay: 0.7s; }
-        .link-box:nth-child(7) { animation-delay: 0.8s; }
+        .link-box:nth-child(1) { animation-delay: 0.1s; }
+        .link-box:nth-child(2) { animation-delay: 0.2s; }
+        .link-box:nth-child(3) { animation-delay: 0.3s; }
+        .link-box:nth-child(4) { animation-delay: 0.4s; }
+        .link-box:nth-child(5) { animation-delay: 0.5s; }
+        .link-box:nth-child(6) { animation-delay: 0.6s; }
+        .link-box:nth-child(7) { animation-delay: 0.7s; }
+        .link-box:nth-child(8) { animation-delay: 0.8s; }
 
         .link-box:hover { transform: translateX(10px); }
         .link-box i { width: 40px; height: 40px; background: var(--glass-border); display: flex; align-items: center; justify-content: center; border-radius: 12px; font-size: 1.1rem; margin-right: 15px; color: var(--primary); transition: 0.3s; }
@@ -109,11 +112,17 @@
         .link-box:hover[href*="linkedin"] { border-color: #0077b5; background: rgba(0, 119, 181, 0.05); }
         .link-box:hover[href*="linkedin"] i { background: #0077b5; color: #fff; box-shadow: 0 0 15px #0077b5; }
 
+        .link-box:hover[href*="x.com"] { border-color: #fff; background: rgba(255, 255, 255, 0.1); }
+        .link-box:hover[href*="x.com"] i { background: #fff; color: #000; box-shadow: 0 0 15px #fff; }
+
         .link-box:hover[href*="youtube"] { border-color: #FF0000; background: rgba(255, 0, 0, 0.05); }
         .link-box:hover[href*="youtube"] i { background: #FF0000; color: #fff; box-shadow: 0 0 15px #FF0000; }
 
-        .link-box:hover[href*="x.com"] { border-color: #fff; background: rgba(255, 255, 255, 0.1); }
-        .link-box:hover[href*="x.com"] i { background: #fff; color: #000; box-shadow: 0 0 15px #fff; }
+        .link-box:hover[href*="twitch.tv"] { border-color: var(--twitch); background: rgba(145, 70, 255, 0.05); }
+        .link-box:hover[href*="twitch.tv"] i { background: var(--twitch); color: #fff; box-shadow: 0 0 15px var(--twitch); }
+
+        .link-box:hover[href*="kick.com"] { border-color: var(--kick); background: rgba(145, 70, 255, 0.05); }
+        .link-box:hover[href*="kick.com"] i { background: var(--kick); color: #fff; box-shadow: 0 0 15px var(--kick); }
 
         .link-box:hover[href*="spotify"] { border-color: #1DB954; background: rgba(29, 185, 84, 0.05); }
         .link-box:hover[href*="spotify"] i { background: #1DB954; color: #000; box-shadow: 0 0 15px #1DB954; }
@@ -122,8 +131,10 @@
         #website-status { border-left: 3px solid var(--primary); }
         #instagram-status { border-left: 3px solid #E1306C; }
         #linkedin-status { border-left: 3px solid #0077b5; }
-        #youtube-status { border-left: 3px solid #FF0000; }
         #twitter-status { border-left: 3px solid #fff; }
+        #youtube-status { border-left: 3px solid #FF0000; }
+        #twitch-status { border-left: 3px solid var(--twitch); }
+        #kick-status { border-left: 3px solid var(--kick); }
         #mail-status { border-left: 3px solid var(--primary); }
         #spotify-status { border-left: 3px solid #1DB954; }
 
@@ -185,12 +196,22 @@
                 <i class="fab fa-twitter"></i>
                 <div class="link-info"><span class="link-title">Twitter</span></div>
             </a>
-            
+
             <a href="https://youtube.com/@akadirakpinarr" class="link-box" id="youtube-status">
                 <i class="fab fa-youtube"></i>
                 <div class="link-info"><span class="link-title">YouTube</span></div>
             </a>
-            
+
+            <a href="https://www.twitch.tv/" class="link-box" id="twitch-status">
+                <i class="fab fa-twitch"></i>
+                <div class="link-info"><span class="link-title">Twitch</span></div>
+            </a>
+
+            <a href="https://kick.com/" class="link-box" id="kick-status">
+                <i class="fab fa-k"></i>
+                <div class="link-info"><span class="link-title">Kick</span></div>
+            </a>
+
             <a href="mailto:info@abdulkadirakpinar.com.tr" class="link-box" id="mail-status">
                 <i class="fas fa-envelope"></i>
                 <div class="link-info"><span class="link-title">Bana E-Posta Gönder</span></div>
